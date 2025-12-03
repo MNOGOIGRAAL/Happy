@@ -1,0 +1,58 @@
+from faulthandler import is_enabled
+
+import time
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+
+from extensions import get_button_by_classname
+
+BASE_URL = 'http://uitestingplayground.com/'
+NAMES_UNITS = {'class_attribute': 'Class Attribute',
+               'disabled_input': 'Disabled Input'}
+
+# s = Service(ChromeDriverManager().install())
+s = Service(r'./chromedriver.exe')
+
+driver = webdriver.Chrome(service=s)
+driver.maximize_window()
+driver.get(BASE_URL)
+driver.implicitly_wait(2)
+
+headers_section = driver.find_element(By.ID, 'overview')
+# headers_section.find_element(By.XPATH,f'//a[text()="{NAMES_UNITS.get('class_attribute')}"]').click()
+# driver.implicitly_wait(2)
+#
+# # get_button_by_classname(driver, 'btn-warning').click()
+# # time.sleep(2)
+# # get_button_by_classname(driver, 'btn-primary').click()
+# # time.sleep(2)
+# # alert = driver.switch_to.alert
+# # alert.accept()
+# # get_button_by_classname(driver, 'btn-success').click()
+# # time.sleep(2)
+
+driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+time.sleep(2)
+headers_section.find_element(By.XPATH, '//*[@id="overview"]//a[text()="Disabled Input"]').click()
+time.sleep(2)
+field_input = driver.find_element(By.XPATH, '//*[@id="inputField"]')
+field_input.send_keys("Топ сеть Cocoon")
+time.sleep(2)
+driver.find_element(By.XPATH, '//*[@id="enableButton"]').click()
+if not driver.find_element(By.XPATH, '//*[@id="inputField"]').is_enabled():
+    print("поле не активно!")
+else:
+    print("Поле актвино")
+driver.implicitly_wait(5)
+
+assert fiel.get_attrribute("value") == 'tec',  "текст отличатеся"
+
+driver.quit()
+
+
